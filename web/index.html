@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <!--<meta http-equiv="x-ua-compatible" content="ie=edge">-->
+
+        <title>Ether Raffle</title>
+
+        <!-- Font Awesome -->
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,800,600,300,300italic,700' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css">
+        
+        <!-- for icon -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+
+        <!-- Material Design Bootstrap -->
+        <link href="css/materialize.css" rel="stylesheet">
+
+        <!-- Magnific-popup css -->
+        <link href="css/magnific-popup.css" rel="stylesheet">
+
+        <!-- Bootstrap core CSS -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Material Design Bootstrap -->
+        <!--<link href="css/progressbar.css" rel="stylesheet">-->
+
+        <!-- Material Design Bootstrap -->
+        <link href="css/mdb.min.css" rel="stylesheet">
+
+        <!-- Your custom styles (optional) -->
+        <link href="css/style.css" rel="stylesheet">
+        <link href="css/responsive.css" rel="stylesheet">
+       
+    <script
+  src="https://code.jquery.com/jquery-2.2.4.min.js"
+  integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+  crossorigin="anonymous"></script>
+    <script src="https://github.com/ethereum/web3.js/blob/develop/dist/web3.min.js"></script>
+    <script>
+        var ABI = [
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "balance",
+				"type": "uint256"
+			}
+		],
+		"name": "Widthdraw",
+		"type": "event"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_fee",
+				"type": "uint256"
+			}
+		],
+		"name": "changeFee",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "time",
+				"type": "uint256"
+			}
+		],
+		"name": "changeTime",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "finish",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "newGame",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "number",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "prize",
+				"type": "uint256"
+			}
+		],
+		"name": "Purchase",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "round",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "winner",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "prize",
+				"type": "uint256"
+			}
+		],
+		"name": "Win",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "fee",
+				"type": "uint256"
+			}
+		],
+		"name": "FeeChange",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "time",
+				"type": "uint256"
+			}
+		],
+		"name": "TimeChange",
+		"type": "event"
+	},
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "winning",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "fallback"
+	},
+	{
+		"inputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "withdraw",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "checkNumber",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256[]"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "get",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address[]"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getBalance",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_round",
+				"type": "uint256"
+			}
+		],
+		"name": "history",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "lastWinners",
+		"outputs": [
+			{
+				"name": "round",
+				"type": "uint256"
+			},
+			{
+				"name": "winnerNumber",
+				"type": "uint256"
+			},
+			{
+				"name": "prize",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "address"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "purchasedNumber",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+];
+        
+        var address = "0xf76f404e602c0bf9da122eba3f9bee4ada1483f9";
+        var timer;
+
+        function purchaseLottery(){
+            web3.eth.sendTransaction({from :web3.eth.accounts[0], to: address, value: web3.toWei(1, "ether")}, function(err, res){
+            });
+        }
+
+        function getMyLotteryNumber(){
+            contract.checkNumber(function (err, res) {
+            	if(res == ""){
+            		$('#labelticket').text("Purchase your Ticket first:p");
+                	$('#ticketno').text("");
+            		return;
+            	}
+            	$('#labelticket').text("My Ticket No.");
+                $('#ticketno').text("[ " + res + " ]");
+            });
+        }
+        
+        function getHistory(currentRound){
+        	var temp = 0;
+        	if(currentRound > 4){
+        		temp = currentRound - 5;
+        	}
+        	for(var i = 1; i < 5 && temp < currentRound - 1; ++i, ++temp){
+                getWinner(temp, i);
+        	}
+        }
+        
+        function getWinner(round, i){
+        	contract.history(round, function(err, res){
+        		if(err){
+        			alert('error')
+        		}
+	    		$('#turnoflastlot'+i).text(res[0]);
+	            $('#lastwinner'+i).text(res[1]);
+	            $('#lastprize'+i).text(Number(res[2])/1000000000000000000);
+        	});
+        }
+        
+        
+
+        function getData(){
+            if(timer)
+                clearInterval(timer);
+            contract.get(function (err, res) {
+                $('#turn').text(res[1]);
+                $('#prize').text("Total Prize: "+res[3]+" ");
+                timer = setInterval(function() {
+                    setTime(res[2]);
+                  }, 1000);
+              getHistory(res[1]);
+            });
+        }
+
+        function setTime(_time){
+            var time = _time * 1000 - new Date().getTime();
+            if(time < 0){
+                $('#timedeadline').text("00:00:00");
+                return;
+            }
+            time /= 1000;
+            var hour = Math.floor(time / 3600);
+            var minutes = Math.floor(time % 3600 / 60);
+            var second = Math.floor(time % 60);
+            if(second < 10)
+               second = "0"+second;
+            $('#timedeadline').text(hour + ":" + minutes + ":" + second);
+        }
+
+        $(function(){
+            if(typeof web3 !== 'undefined'){
+                web3 = new Web3(web3.currentProvider);
+                //alert(web3.currentProvider) //현재 이더리움 네트워크에 연결된 커넥션
+            }
+            else{
+                alert('metamask를 준비하세요');
+                alert('없으면 수동으로 이더리움넷에 접속합니다.');
+                web3 = new Web3(Web3.providers.HttpProvider('이더리움 넷 주소'))
+            }
+
+            contract = web3.eth.contract(ABI).at(address);
+            
+            $('#transfer').on('click',function(){
+				purchaseLottery();
+			})
+			
+			$('#checkticketno').on('click',function(){
+				//$('#modalbtn').click();
+				getMyLotteryNumber();
+			})
+		
+            contract.Purchase().watch(function (err, res) {
+            	//alert(res.args);
+                //$('#ticketno').text('[' + res.args.number + ']');
+                $('#prize').text("Total Prize : "+ res.args.prize);
+            });
+
+            contract.Win().watch(function (err, res) {
+            	$('#roundmodal').text("#"+ res.args.round + " Winner Announcement");
+            	$('#winnermodal').text("Winner no. "+ res.args.winner);
+            	$('#prizemodal').text("Prize: "+ Number(res.args.prize)/1000);
+            	$('#modalbtn').click();
+            	getData();
+            });
+            
+            contract.TimeChange().watch(function (err, res) {
+            	getData();
+            });
+            
+            getData();
+            
+        })
+    </script>
+    
+    
+    </head>
+
+    <body data-spy="scroll" data-target=".navbar-desktop">
+        <!-- Start your project here-->
+
+        <div id="home" class="slider">
+            <ul class="slides">
+                <li>
+                    <img src="img/bgimage.jpg"> <!-- random image -->
+                    <div class="caption center-align">
+                        <div class="single_home">
+                        	<p>on the most equitable basis</p>
+                            <h1>Ether Raffle</h1>
+                            <div>
+                            <h2 style="display:inline">Draw #</h2><h2 id="turn"style="display:inline"></h2>
+                            </div>
+                            <div>
+                            <h2 id="prize" style="display:inline"></h2><h2 style="display:inline"><i class="fab fa-ethereum"></i></h2>
+                            </div>
+                            <div>
+                            <h2 id="timedeadline"></h2>
+                            </div>
+                            <div style="margin-top:-10px;">
+                            <button type="button" id="transfer" class="btn btn-danger m-t-3 waves-effect waves-red" style="width:100%">
+                            <div>
+							<span>1 x</span>
+							<i class="fab fa-ethereum"></i>
+							</div>
+							<div class="container_">
+							<span id="text_slides">Let's make a bet! Are you ready? :)</span>
+							</div>
+							</button>
+							</div>
+										
+							 <div id="ticket_area" style="padding-top:2%">
+							 	<button type="button" class="btn btn-warning" id="checkticketno">Get Your Ticket</button>
+	                            <div class="single_counter p-y-2 m-t-1" id="myticket">
+	                               <h3 id="labelticket"></h3>
+	                               <h2 id="ticketno"></h2>
+	                            </div>
+	                        </div>
+                        </div>
+                    </div>
+                </li>
+                
+                <!--   
+                <li>
+                    <img src="img/homebenner.jpg"> <!-- random image -->
+                    <div class="caption center-align">
+                        <div class="single_home">
+                            <h1>ADVENTURER</h1>
+                            <p>MURI, A TEMPLATE AT THE HEART OF THE BEAUTY</p>
+                            <button type="button" class="btn btn-danger m-t-3 waves-effect waves-red">See More</button>
+                        </div>
+                    </div>
+                </li> 
+                -->
+                
+            </ul>
+        </div>
+        
+        <!-- Modal -->
+        <button hidden id="modalbtn" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>
+        <div class="container">
+		  <!-- Trigger the modal with a button --> 
+		  <!-- Modal -->
+		  <div class="modal fade" id="myModal" role="dialog">
+		    <div class="modal-dialog">
+		    
+		      <!-- Modal content-->
+		      <div class="modal-content">
+		        <div class="modal-header">
+		          <button type="button" class="close" data-dismiss="modal">&times;</button>
+		          <h4 class="modal-title" id="roundmodal"></h4>
+		        </div>
+		        <div class="modal-body">
+		          <h3 id="winnermodal"></h3>
+		          <div>
+		          <h3 id="prizemodal" style="display:inline"></h3>
+		          <i class="fab fa-ethereum" style="display:inline"></i>
+		          </div>
+		        </div>
+		        <div class="modal-footer">
+		          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		        </div>
+		      </div>
+		      
+		    </div>
+		  </div>
+		  
+		  </div>
+        
+        
+        <section id="counter" class="counter">
+
+            <div class="main_counter_area m-y-3">
+                <div class="overlay p-y-3">
+                    <div class="container">
+                    	<h2 style="text-align:center;color:white;"> Last Lottery Winners</h2>
+                        <div class="row">
+                            <div class="main_counter_content center white-text wow fadeInUp">
+                                <div class="col-md-3">
+                                    <div class="single_counter p-y-2 m-t-1">
+                                    	<div style="margin-bottom:5%">
+                                        <h3 style="display:inline">Draw #</h3>
+                                        <h3 id="turnoflastlot1" style="display:inline"></h3>
+                                        </div>
+                                        <div style="margin-bottom:5%">
+                                        <h2 style="display:inline">No.</h2>
+                                        <h2 class="statistic-counter" id="lastwinner1" style="display:inline"></h2>
+                                        </div>
+                                        <div>
+                                        <h2 id="lastprize1" style="display:inline"></h2>
+                                        <i class="fab fa-ethereum"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="single_counter p-y-2 m-t-1">
+                                    	<div style="margin-bottom:5%">
+                                        <h3 style="display:inline">Draw #</h3>
+                                        <h3 id="turnoflastlot2" style="display:inline"></h3>
+                                        </div>
+                                        <div style="margin-bottom:5%">
+                                        <h2 style="display:inline">No.</h2>
+                                        <h2 class="statistic-counter" id="lastwinner2" style="display:inline"></h2>
+                                        </div>
+                                        <div>
+                                        <h2 id="lastprize2" style="display:inline"></h2>
+                                        <i class="fab fa-ethereum"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="single_counter p-y-2 m-t-1">
+                                    	<div style="margin-bottom:5%">
+                                        <h3 style="display:inline">Draw #</h3>
+                                        <h3 id="turnoflastlot3" style="display:inline"></h3>
+                                        </div>
+                                        <div style="margin-bottom:5%">
+                                        <h2 style="display:inline">No.</h2>
+                                        <h2 class="statistic-counter" id="lastwinner3" style="display:inline"></h2>
+                                        </div>
+                                        <div>
+                                        <h2 id="lastprize3" style="display:inline"></h2>
+                                        <i class="fab fa-ethereum"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="single_counter p-y-2 m-t-1">
+                                    	<div style="margin-bottom:5%">
+                                        <h3 style="display:inline">Draw #</h3>
+                                        <h3 id="turnoflastlot4" style="display:inline"></h3>
+                                        </div>
+                                        <div style="margin-bottom:5%">
+                                        <h2 style="display:inline">No.</h2>
+                                        <h2 class="statistic-counter" id="lastwinner4" style="display:inline"></h2>
+                                        </div>
+                                        <div></div>
+                                        <h2 id="lastprize4" style="display:inline"></h2><i class="fab fa-ethereum"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+        </section><!-- End of counter Section -->
+
+
+        <section id="footer" class="footer">
+            <div class="main_coppyright">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-6 col-xs-12">
+                            <div class="copyright_text m-t-2 text-xs-center">
+                                <p class="wow zoomIn" data-wow-duration="1s">Made with <i class="fab fa-ethereum"></i> by Laggu & Eileen.
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="socail_coppyright text-sm-right m-t-2 text-xs-center wow zoomIn">
+                                <a href="#!"><i class="fab fa-facebook"></i></a>
+                                <a href="#!"><i class="fab fa-twitter"></i></a>
+                                <a href="#!"><i class="fab fa-google-plus"></i></a>
+                                <a href="#!"><i class="fa fa-rss"></i></a>
+                                <a href="#!"><i class="fab fa-vimeo"></i></a>
+                                <a href="#!"><i class="fab fa-pinterest"></i></a>
+                                <a href="#!"><i class="fab fa-linkedin"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+        <!-- /Start your project here-->
+
+
+        <!-- SCRIPTS -->
+
+        <!-- JQuery -->
+        <script type="text/javascript" src="js/jquery-2.2.3.min.js"></script>
+
+        <!-- Bootstrap tooltips -->
+        <script type="text/javascript" src="js/tether.min.js"></script>
+
+
+        <!-- Bootstrap core JavaScript -->
+        <script type="text/javascript" src="js/bootstrap.min.js"></script>
+
+        <!-- MDB core JavaScript -->
+        <script type="text/javascript" src="js/mdb.min.js"></script>
+
+        <!-- Wow js -->
+        <script type="text/javascript" src="js/wow.min.js"></script>
+
+        <!-- Mixitup js -->
+        <script type="text/javascript" src="js/jquery.mixitup.min.js"></script>
+
+        <!-- Magnific-popup js -->
+        <script type="text/javascript" src="js/jquery.magnific-popup.js"></script>
+
+        <!-- accordion js -->
+        <script type="text/javascript" src="js/accordion.js"></script>
+
+        <!-- MDB core JavaScript -->
+        <script type="text/javascript" src="js/materialize.js"></script>
+
+        <script>
+            $(".button-collapse").sideNav();
+        </script>
+
+        <!-- wow js active -->
+        <script type="text/javascript">
+            new WOW().init();
+        </script>
+
+        <script type="text/javascript" src="js/plugins.js"></script>
+        <script type="text/javascript" src="js/main.js"></script>
+
+
+    </body>
+
+</html>

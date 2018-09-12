@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <!--<meta http-equiv="x-ua-compatible" content="ie=edge">-->
+
+        <title>Admin ver. Ether Raffle</title>
+
+        <!-- Font Awesome -->
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,800,600,300,300italic,700' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css">
+
+        <!-- for icon -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+
+        <!-- Material Design Bootstrap -->
+        <link href="css/materialize.css" rel="stylesheet">
+
+        <!-- Magnific-popup css -->
+        <link href="css/magnific-popup.css" rel="stylesheet">
+
+        <!-- Bootstrap core CSS -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Material Design Bootstrap -->
+        <!--<link href="css/progressbar.css" rel="stylesheet">-->
+
+        <!-- Material Design Bootstrap -->
+        <link href="css/mdb.min.css" rel="stylesheet">
+
+        <!-- Your custom styles (optional) -->
+        <link href="css/style.css" rel="stylesheet">
+        <link href="css/responsive.css" rel="stylesheet">
+<script
+  src="https://code.jquery.com/jquery-2.2.4.min.js"
+  integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+  crossorigin="anonymous"></script>
+    <script src="https://github.com/ethereum/web3.js/blob/develop/dist/web3.min.js"></script>
+                <script>
+        var ABI = [
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "balance",
+				"type": "uint256"
+			}
+		],
+		"name": "Widthdraw",
+		"type": "event"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_fee",
+				"type": "uint256"
+			}
+		],
+		"name": "changeFee",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "time",
+				"type": "uint256"
+			}
+		],
+		"name": "changeTime",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "finish",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "newGame",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "number",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "prize",
+				"type": "uint256"
+			}
+		],
+		"name": "Purchase",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "round",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "winner",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "prize",
+				"type": "uint256"
+			}
+		],
+		"name": "Win",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "fee",
+				"type": "uint256"
+			}
+		],
+		"name": "FeeChange",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "time",
+				"type": "uint256"
+			}
+		],
+		"name": "TimeChange",
+		"type": "event"
+	},
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "winning",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "fallback"
+	},
+	{
+		"inputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "withdraw",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "checkNumber",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256[]"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "get",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address[]"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getBalance",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_round",
+				"type": "uint256"
+			}
+		],
+		"name": "history",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "lastWinners",
+		"outputs": [
+			{
+				"name": "round",
+				"type": "uint256"
+			},
+			{
+				"name": "winnerNumber",
+				"type": "uint256"
+			},
+			{
+				"name": "prize",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "address"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "purchasedNumber",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+];
+        var address = "0xf76f404e602c0bf9da122eba3f9bee4ada1483f9";
+        var contract;
+        var timer;
+
+        function drawWinner(){
+            contract.winning(function (err, res) {
+                //alert('winner' + res);
+            });
+        }
+
+        function finishLottery(){
+            contract.finish(function (err, res) {
+            });
+        }
+
+        function changeTime(){
+            var time = new Date($('#date').val());                   // 바꿀 시간 저장
+            if(time > new Date().getTime()){
+            	//alert(time = time.getTime()/1000);
+	            contract.changeTime(time, function (err, res) {
+	            });
+            }else{
+            	alert("과거시간은 입력할 수 없습니다.");
+            }
+        }
+
+        function changeFee(){
+            var fee = $('#changedfee').val();                   // 바꿀 수수료 저장
+            //alert(fee);
+            if(0 <= fee && fee <= 100){
+	            contract.changeFee(fee, function (err, res) {
+	            	
+	            });
+            }else{
+            	alert("0~100 사이의 수를 입력해 주세요");
+            }
+        }
+
+        function withdraw(){
+            var amount = $('#withdrawals').val();                    // 인출할 금액             // 바꿀 시간 저장
+            //alert(amount);
+            contract.withdraw(amount, function (err, res) {
+            });
+        }
+        
+		function getBalance(){
+            contract.getBalance(function (err, res) {
+                $('#balance').text("Balance: "+res);
+            });
+        }
+        
+        function setBalance(balance){
+        	$('#balance').text("Balance: "+ balance);
+        }
+
+        function getData(){
+            if(timer)
+                clearInterval(timer);
+            contract.get(function (err, res) {
+                $('#turn').text("Draw #" + res[1]);
+                $('#prize').text("Total Prize: "+res[3]+" ");
+                $('#currentfee').text("Current Fee : "+res[4]);
+                timer = setInterval(function() {
+                    setTime(res[2]);
+                  }, 1000);
+              getHistory(res[1]);
+            });
+        }
+
+        function setTime(_time){
+            var time = _time * 1000 - new Date().getTime();
+            if(time < 0){
+                $('#timedeadline').text("00:00:00");
+                setTimeout(function() {
+                	drawWinner();
+				}, 60000);
+				clearInterval(timer);
+                return;
+            }
+            time /= 1000;
+            var hour = Math.floor(time / 3600);
+            var minutes = Math.floor(time % 3600 / 60);
+            var second = Math.floor(time % 60);
+            if(second < 10)
+               second = "0"+second;
+            $('#timedeadline').text(hour + ":" + minutes + ":" + second);
+        }
+
+        $(function(){
+            if(typeof web3 !== 'undefined'){
+                web3 = new Web3(web3.currentProvider);
+                //alert(web3.currentProvider) //현재 이더리움 네트워크에 연결된 커넥션
+            }
+            else{
+                alert('metamask를 준비하세요');
+                alert('없으면 수동으로 이더리움넷에 접속합니다.');
+                web3 = new Web3(Web3.providers.HttpProvider('이더리움 넷 주소'))
+            }
+
+            contract = web3.eth.contract(ABI).at(address);
+
+            
+            contract.TimeChange().watch(function (err, res) {
+                getData();
+            });
+
+            contract.FeeChange().watch(function (err, res) {
+                $('#currentfee').text("Current Fee : "+res.args.fee);
+            });
+            
+            contract.Widthdraw().watch(function (err, res) {
+            	setBalance(res.args.balance);
+            });
+            
+            contract.Purchase().watch(function (err, res) {
+                $('#prize').text("Total Prize : "+ res.args.prize);
+            });
+            
+            $('#winnerBtn').on('click',function(){
+				drawWinner();
+			})
+			
+			$('#finishBtn').on('click',function(){
+				finishLottery();
+			})
+			
+			$('#withdrawals_btn').on('click',function(){
+				withdraw();
+			})
+			
+			$('#changedfee_btn').on('click',function(){
+				changeFee();
+			})
+			
+			$('#date_btn').on('click',function(){
+				changeTime();
+			})
+			
+            getData();
+            getBalance();
+        })
+    </script>
+
+    </head>
+
+    <body data-spy="scroll" data-target=".navbar-desktop">
+        <!-- Start your project here-->
+
+        <div id="home" class="slider">
+            <ul class="slides">
+                <li>
+                    <img src="img/black.jpg"> <!-- random image -->
+                    <div class="caption center-align">
+                        <div class="single_home">
+                           <p>Admin Ver.</p>
+                            <h1>Ether Raffle</h1>
+                            <h2 id="turn"></h2>
+                            <h2 id="prize" style="display:inline"></h2><h2 style="display:inline"><i class="fab fa-ethereum"></i></h2>
+                            <h2 id="timedeadline"></h2>
+                            <button type="button" id="winnerBtn" class="btn m-t-3 waves-effect waves-red" style="width:80%;height:65px;background-color:#212121;">
+                     <div class="container_">
+                     <span id="text_slides" style="">Draw for winners</span>
+                     </div>
+                     </button>
+                     <button type="button" id="finishBtn" class="btn btn-danger m-t-3 waves-effect waves-red" style="width:80%;height:65px;">
+                     <div class="container_">
+                     <span id="text_slides" style="">Stop a Roulette</span>
+                     </div>
+                     </button>
+                        </div>
+                    </div>
+                </li>
+
+                <!--
+                <li>
+                    <img src="img/homebenner.jpg"> <!-- random image -->
+                    <div class="caption center-align">
+                        <div class="single_home">
+                            <h1>ADVENTURER</h1>
+                            <p>MURI, A TEMPLATE AT THE HEART OF THE BEAUTY</p>
+                            <button type="button" class="btn btn-danger m-t-3 waves-effect waves-red">See More</button>
+                        </div>
+                    </div>
+                </li>
+                -->
+
+            </ul>
+        </div>
+
+
+        <section id="service" class="service">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="main_service_area">
+                            <div class="head_title center m-y-3 wow fadeInUp">
+                                <!-- <h2>Our Service</h2> -->
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="jumbotron single_service  wow fadeInLeft" style="background-color:#212121;opacity:0.9;">
+                                        <div class="service_icon center" style="margin-bottom:3%">
+                                            <i class="fas fa-clock" style="color:white"></i>
+                                        </div>
+                                        <div class="s_service_text text-sm-center text-xs-center" style="color:white">
+                                            <h4>Set up the time</h4>
+                                            <div class="input-group" style="padding-top:18%">
+                                            <span class="input-group-addon">day</span>
+                                            <input id="date" type="date" class="form-control" name="date">
+                                            </div>
+                                        </div>
+
+                                        <div class="service_btn center" style="padding-top:8%">
+                                            <button id="date_btn" class="btn waves-effect waves-red" style="background-color:#747474">change</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="jumbotron single_service wow fadeInUp" style="background-color:#212121;opacity:0.9;">
+                                        <div class="service_icon center" style="margin-bottom:2%">
+                                            <i class="fas fa-file-invoice-dollar" style="color:white"></i>
+                                        </div>
+                                        <div class="s_service_text text-sm-center text-xs-center" style="color:white">
+                                            <h4>Change the fee</h4>
+                                            <span id="currentfee" style="color:white"></span>
+                                            <div class="input-group" style="padding-top:11%">
+                                            <span class="input-group-addon">fee</span>
+                                            <input id="changedfee" type="text" class="form-control" name="fee" placeholder="Changed fee">
+                                            </div>
+                                        </div>
+
+                                        <div class="service_btn center" style="padding-top:8%">
+                                            <button id="changedfee_btn" class="btn waves-effect waves-red" style="background-color:#747474">change</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="jumbotron single_service wow fadeInUp" style="background-color:#212121;opacity:0.9;">
+                                        <div class="service_icon center" style="margin-bottom:2%">
+                                            <i class="fas fa-hand-holding-usd" style="color:white"></i>
+                                        </div>
+                                        <div class="s_service_text text-sm-center text-xs-center" style="color:white;">
+                                            <h4>Make Withdrawals</h4>
+                                            <div>
+                                            <span id="balance" style="color:white"></span>
+                                            </div>
+                                            <div class="input-group" style="padding-top:11%">
+                                            <span class="input-group-addon">Wei</span>
+                                            <input id="withdrawals" type="text" class="form-control" name="withdrawals" placeholder="money">
+                                            </div>
+                                        </div>
+                                        <div class="service_btn center" style="padding-top:8%">
+                                            <button id="withdrawals_btn" class="btn waves-effect waves-red" style="background-color:#747474">withdrawals</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+        </section> <!-- End of service section -->
+
+
+        <section id="footer" class="footer">
+            <div class="main_coppyright">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-6 col-xs-12">
+                            <div class="copyright_text m-t-2 text-xs-center">
+                                <p class="wow zoomIn" data-wow-duration="1s">Made with <i class="fab fa-ethereum"></i> by Laggu & Eileen.
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="socail_coppyright text-sm-right m-t-2 text-xs-center wow zoomIn">
+                                <a href="#!"><i class="fab fa-facebook"></i></a>
+                                <a href="#!"><i class="fab fa-twitter"></i></a>
+                                <a href="#!"><i class="fab fa-google-plus"></i></a>
+                                <a href="#!"><i class="fa fa-rss"></i></a>
+                                <a href="#!"><i class="fab fa-vimeo"></i></a>
+                                <a href="#!"><i class="fab fa-pinterest"></i></a>
+                                <a href="#!"><i class="fab fa-linkedin"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+        <!-- /Start your project here-->
+
+
+        <!-- SCRIPTS -->
+
+        <!-- JQuery -->
+        <script type="text/javascript" src="js/jquery-2.2.3.min.js"></script>
+
+        <!-- Bootstrap tooltips -->
+        <script type="text/javascript" src="js/tether.min.js"></script>
+
+
+        <!-- Bootstrap core JavaScript -->
+        <script type="text/javascript" src="js/bootstrap.min.js"></script>
+
+        <!-- MDB core JavaScript -->
+        <script type="text/javascript" src="js/mdb.min.js"></script>
+
+        <!-- Wow js -->
+        <script type="text/javascript" src="js/wow.min.js"></script>
+
+        <!-- Mixitup js -->
+        <script type="text/javascript" src="js/jquery.mixitup.min.js"></script>
+
+        <!-- Magnific-popup js -->
+        <script type="text/javascript" src="js/jquery.magnific-popup.js"></script>
+
+        <!-- accordion js -->
+        <script type="text/javascript" src="js/accordion.js"></script>
+
+        <!-- MDB core JavaScript -->
+        <script type="text/javascript" src="js/materialize.js"></script>
+
+        <script>
+            $(".button-collapse").sideNav();
+        </script>
+
+        <!-- wow js active -->
+        <script type="text/javascript">
+            new WOW().init();
+        </script>
+
+        <script type="text/javascript" src="js/plugins.js"></script>
+        <script type="text/javascript" src="js/main.js"></script>
+
+
+    </body>
+
+</html>
